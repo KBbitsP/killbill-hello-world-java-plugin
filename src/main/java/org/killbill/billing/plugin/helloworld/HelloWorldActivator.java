@@ -39,6 +39,7 @@ import org.killbill.billing.plugin.core.resources.jooby.PluginAppBuilder;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 import org.killbill.billing.invoice.plugin.api.InvoiceFormatterFactory;
+import org.killbill.billing.control.plugin.api.PaymentControlPluginApi;
 
 public class HelloWorldActivator extends KillbillActivatorBase {
 
@@ -78,6 +79,9 @@ public class HelloWorldActivator extends KillbillActivatorBase {
         // changed to any other plugin api)
         final PaymentPluginApi paymentPluginApi = new HelloWorldPaymentPluginApi();
         registerPaymentPluginApi(context, paymentPluginApi);
+        
+        final PaymentControlPluginApi paymentControlPluginApi = new HelloWorldPaymentControlPluginApi();
+        registerPaymentControlPluginApi(context, paymentControlPluginApi);
 
         // Expose metrics (optional)
         metricsGenerator = new MetricsGeneratorExample(metricRegistry);
@@ -132,6 +136,12 @@ public class HelloWorldActivator extends KillbillActivatorBase {
         final Hashtable<String, String> props = new Hashtable<String, String>();
         props.put(OSGIPluginProperties.PLUGIN_NAME_PROP, PLUGIN_NAME);
         registrar.registerService(context, InvoicePluginApi.class, api, props);
+    }
+    
+    private void registerPaymentControlPluginApi(final BundleContext context, final PaymentControlPluginApi api) {
+        final Hashtable<String, String> props = new Hashtable<String, String>();
+        props.put(OSGIPluginProperties.PLUGIN_NAME_PROP, PLUGIN_NAME);
+        registrar.registerService(context, PaymentControlPluginApi.class, api, props);
     }
 
     private void registerHealthcheck(final BundleContext context, final Healthcheck healthcheck) {
